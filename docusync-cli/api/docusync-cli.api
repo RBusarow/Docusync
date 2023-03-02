@@ -1,5 +1,5 @@
 public final class com/rickbusarow/docusync/DocusyncEngine : java/io/Serializable {
-	public fun <init> (Lcom/rickbusarow/docusync/ReplacersCache;Z)V
+	public fun <init> (Ljava/util/Map;Lcom/rickbusarow/docusync/ReplacersCache;Z)V
 	public final fun run (Ljava/io/File;)Z
 	public final fun run (Ljava/util/List;)Z
 }
@@ -59,7 +59,7 @@ public final class com/rickbusarow/docusync/Replacer$Companion {
 }
 
 public final class com/rickbusarow/docusync/ReplacersCache : java/io/Serializable {
-	public fun <init> (Ljava/util/List;)V
+	public fun <init> (Ljava/util/Map;Ljava/util/List;)V
 	public final fun get (Ljava/io/File;)Ljava/util/Map;
 }
 
@@ -68,6 +68,11 @@ public final class com/rickbusarow/docusync/internal/ApplyKt {
 	public static final fun letIf (Ljava/lang/Object;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun requireNotNull (Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun requireNotNull (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/rickbusarow/docusync/internal/CollectionsKt {
+	public static final fun split (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun split (Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }
 
 public final class com/rickbusarow/docusync/internal/Color : java/lang/Enum {
@@ -157,5 +162,102 @@ public final class com/rickbusarow/docusync/internal/StringKt {
 	public static final fun takeIfNotEmpty (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun toStringPretty (Ljava/lang/Object;)Ljava/lang/String;
 	public static final fun trimLineEnds (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/rickbusarow/docusync/psi/DocusyncPsiFileFactory : java/io/Serializable {
+	public fun <init> ()V
+	public final fun create (Ljava/io/File;)Lorg/jetbrains/kotlin/com/intellij/psi/PsiFile;
+	public final fun createJava (Ljava/lang/String;Ljava/lang/String;)Lorg/jetbrains/kotlin/com/intellij/psi/PsiJavaFile;
+	public final fun createKotlin (Ljava/lang/String;Ljava/lang/String;)Lorg/jetbrains/kotlin/psi/KtFile;
+	public final fun getCoreEnvironment ()Lorg/jetbrains/kotlin/cli/jvm/compiler/KotlinCoreEnvironment;
+}
+
+public final class com/rickbusarow/docusync/psi/LazyMap {
+	public static final field Companion Lcom/rickbusarow/docusync/psi/LazyMap$Companion;
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getSize ()I
+	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun put (Ljava/lang/Object;Lkotlin/Lazy;)Ljava/lang/Object;
+	public final fun set (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun set (Ljava/lang/Object;Lkotlin/Lazy;)Ljava/lang/Object;
+	public final fun set (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/rickbusarow/docusync/psi/LazyMap$Companion {
+	public final fun toLazyMap (Lkotlin/sequences/Sequence;)Lcom/rickbusarow/docusync/psi/LazyMap;
+}
+
+public final class com/rickbusarow/docusync/psi/LazyMapKt {
+	public static final fun stateful (Lkotlin/sequences/Sequence;)Lkotlin/sequences/Sequence;
+}
+
+public final class com/rickbusarow/docusync/psi/NamedSamples : java/io/Serializable {
+	public fun <init> (Lcom/rickbusarow/docusync/psi/DocusyncPsiFileFactory;)V
+	public final fun findAll (Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public final fun findAllInKotlin (Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+}
+
+public final class com/rickbusarow/docusync/psi/SampleRequest : java/io/Serializable {
+	public static final field Companion Lcom/rickbusarow/docusync/psi/SampleRequest$Companion;
+	public synthetic fun <init> (ILjava/lang/String;ZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Z)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun copy (Ljava/lang/String;Z)Lcom/rickbusarow/docusync/psi/SampleRequest;
+	public static synthetic fun copy$default (Lcom/rickbusarow/docusync/psi/SampleRequest;Ljava/lang/String;ZILjava/lang/Object;)Lcom/rickbusarow/docusync/psi/SampleRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBodyOnly ()Z
+	public final fun getFqName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final fun write$Self (Lcom/rickbusarow/docusync/psi/SampleRequest;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/rickbusarow/docusync/psi/SampleRequest$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/rickbusarow/docusync/psi/SampleRequest$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/rickbusarow/docusync/psi/SampleRequest;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/rickbusarow/docusync/psi/SampleRequest;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/rickbusarow/docusync/psi/SampleRequest$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/rickbusarow/docusync/psi/SampleResult : java/io/Serializable {
+	public static final field Companion Lcom/rickbusarow/docusync/psi/SampleResult$Companion;
+	public synthetic fun <init> (ILcom/rickbusarow/docusync/psi/SampleRequest;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lcom/rickbusarow/docusync/psi/SampleRequest;Ljava/lang/String;)V
+	public final fun component1 ()Lcom/rickbusarow/docusync/psi/SampleRequest;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lcom/rickbusarow/docusync/psi/SampleRequest;Ljava/lang/String;)Lcom/rickbusarow/docusync/psi/SampleResult;
+	public static synthetic fun copy$default (Lcom/rickbusarow/docusync/psi/SampleResult;Lcom/rickbusarow/docusync/psi/SampleRequest;Ljava/lang/String;ILjava/lang/Object;)Lcom/rickbusarow/docusync/psi/SampleResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Ljava/lang/String;
+	public final fun getRequest ()Lcom/rickbusarow/docusync/psi/SampleRequest;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public static final fun write$Self (Lcom/rickbusarow/docusync/psi/SampleResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/rickbusarow/docusync/psi/SampleResult$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/rickbusarow/docusync/psi/SampleResult$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/rickbusarow/docusync/psi/SampleResult;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/rickbusarow/docusync/psi/SampleResult;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/rickbusarow/docusync/psi/SampleResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

@@ -174,6 +174,14 @@ internal inline fun <reified T : Task> TaskContainer.registerOnce(
   configurationAction: Action<in T>
 ): TaskProvider<T> = registerOnce(name, T::class.java, configurationAction)
 
+internal inline fun <reified T : Task> TaskContainer.registerOnce(
+  name: String
+): TaskProvider<T> = if (names.contains(name)) {
+  named(name, T::class.java)
+} else {
+  register(name, T::class.java)
+}
+
 internal fun <T : Task> TaskContainer.registerOnce(
   name: String,
   type: Class<T>,

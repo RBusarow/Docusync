@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package docusync
+package com.rickbusarow.docusync
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import org.junit.jupiter.api.Test
@@ -45,7 +45,7 @@ class JavaSerializationTest {
       replacement = "foo"
     )
 
-    val cache = ReplacersCache(listOf(replacer))
+    val cache = ReplacersCache(mapOf(), listOf(replacer))
 
     shouldNotThrowAny {
       ObjectOutputStream(ByteArrayOutputStream()).writeObject(cache)
@@ -61,12 +61,12 @@ class JavaSerializationTest {
       replacement = "foo"
     )
 
-    val cache = ReplacersCache(listOf(replacer))
+    val cache = ReplacersCache(mapOf(), listOf(replacer))
 
     val outStream = ObjectOutputStream(ByteArrayOutputStream())
 
     shouldNotThrowAny {
-      outStream.writeObject(DocusyncEngine(cache, true))
+      outStream.writeObject(DocusyncEngine(mapOf(), cache, true))
     }
   }
 }

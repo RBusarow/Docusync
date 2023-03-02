@@ -61,12 +61,6 @@ abstract class SpotlessConventionPlugin : Plugin<Project> {
       }
 
       yaml.prettier(target.libsCatalog.version("prettier"))
-      // yaml.prettier(
-      // mapOf(
-      //   "prettier" to target.libsCatalog.version("prettier"),
-      //   "prettier-plugin-sh" to target.libsCatalog.version("prettier-plugin-sh")
-      // )
-      // )
     }
   }
 

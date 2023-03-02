@@ -1,3 +1,5 @@
+import com.rickbusarow.docusync.psi.SampleRequest
+
 /*
  * Copyright (C) 2023 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +22,7 @@ plugins {
 
 docusync {
 
-  sourceSet("main") {
+  docsSet("main") {
 
     docs(
       fileTree(projectDir) {
@@ -31,15 +33,36 @@ docusync {
       }
     )
 
+    sampleCode.from(fileTree(projectDir.resolve("../docusync-gradle-plugin/src/main/kotlin")))
+
     replacer("cats-to-dogs") {
       regex = "cat"
       replacement = "dog"
     }
 
     replacer("dogs-to-cats") {
-      regex = "dog"
+      regex = maven()
       replacement = "cat"
     }
+
+    replacer("code") {
+
+      regex = "\n([\\s\\S]*)\n"
+
+      replacement = sourceCode(
+        SampleRequest("com.rickbusarow.docusync.gradle.DocsSyncTask", false)
+      ) { task ->
+        "\n```kotlin\n$task\n```\n"
+      }
+    }
+
+    // replacer("code") {
+    //
+    //   println("#### in the DSL")
+    //
+    //   regex = """[\s\S]*"""
+    //   replacement = "cat"
+    // }
   }
 }
 
@@ -49,9 +72,11 @@ val createDocs by tasks.registering {
 
   doLast {
 
+    root.deleteRecursively()
+
     root.mkdirs()
 
-    repeat(100) {
+    repeat(5) {
 
       val file = root.resolve("markdown_$it.md")
 
@@ -59,14 +84,21 @@ val createDocs by tasks.registering {
         """
         ## My File $it
 
-        <!---docusync cats-to-dogs,cats-to-dogs-->
-        cat
+        <!---docusync cats-to-dogs,dogs-to-cats-->
+
+        com.example.foo:foo-utils:1.2.3-SNAPSHOT
 
         cats
 
         category
 
+        api 'com.rickbusarow.modulecheck:modulecheck-core:0.12.5'
+
         dog
+
+        <!---/docusync-->
+
+        <!---docusync code-->
 
         <!---/docusync-->
         """.trimIndent()

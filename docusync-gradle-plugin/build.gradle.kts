@@ -63,7 +63,11 @@ dependencies {
   implementation(libs.google.ksp)
   implementation(libs.java.diff.utils)
   implementation(libs.jetbrains.markdown)
+  implementation(libs.kotlin.compiler)
   implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.kotlinx.serialization.json)
+
+  // shade(libs.kotlinx.serialization.json)
 
   testImplementation(libs.junit.engine)
   testImplementation(libs.junit.jupiter)

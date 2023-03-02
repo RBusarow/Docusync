@@ -36,6 +36,7 @@ dependencies {
 
   implementation(libs.java.diff.utils)
   implementation(libs.jetbrains.markdown)
+  implementation(libs.kotlin.compiler)
   implementation(libs.kotlinx.coroutines.core)
 
   testImplementation(libs.junit.engine)

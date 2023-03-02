@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package docusync.markdown
+package com.rickbusarow.docusync.markdown
 
 import com.rickbusarow.docusync.Replacer
 import com.rickbusarow.docusync.internal.SEMVER_REGEX

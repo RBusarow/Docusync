@@ -3,8 +3,14 @@ com.charleskorn.kaml:kaml:0.52.0
 com.github.ajalt.clikt:clikt-jvm:3.5.2
 com.github.ajalt.clikt:clikt:3.5.2
 io.github.java-diff-utils:java-diff-utils:4.12
+net.java.dev.jna:jna:5.6.0
 org.ec4j.core:ec4j-core:0.3.0
+org.jetbrains.intellij.deps:trove4j:1.0.20200330
 org.jetbrains.kotlin:kotlin-bom:1.8.10
+org.jetbrains.kotlin:kotlin-compiler-embeddable:1.8.10
+org.jetbrains.kotlin:kotlin-daemon-embeddable:1.8.10
+org.jetbrains.kotlin:kotlin-reflect:1.8.10
+org.jetbrains.kotlin:kotlin-script-runtime:1.8.10
 org.jetbrains.kotlin:kotlin-stdlib-common:1.8.10
 org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10
 org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10

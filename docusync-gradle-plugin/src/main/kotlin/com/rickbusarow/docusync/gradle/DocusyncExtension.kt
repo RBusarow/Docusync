@@ -19,117 +19,103 @@ import com.rickbusarow.docusync.gradle.internal.dependsOn
 import com.rickbusarow.docusync.gradle.internal.registerOnce
 import com.rickbusarow.docusync.internal.capitalize
 import org.gradle.api.Action
-import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.NamedDomainObjectProvider
-import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.ProjectLayout
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.TaskContainer
-import org.intellij.lang.annotations.Language
+import org.gradle.api.tasks.TaskProvider
 import javax.inject.Inject
 
 /** */
 abstract class DocusyncExtension @Inject constructor(
-  private val taskContainer: TaskContainer
+  private val taskContainer: TaskContainer,
+  private val objectFactory: ObjectFactory,
+  private val layout: ProjectLayout
 ) : java.io.Serializable {
 
   /** */
-  abstract val sourceSets: NamedDomainObjectContainer<DocusyncSourceSet>
+  abstract val docsSets: NamedDomainObjectContainer<DocsSet>
 
   /** */
-  fun sourceSet(
+  fun docsSet(
     name: String = "main",
-    action: Action<DocusyncSourceSet>
-  ): NamedDomainObjectProvider<DocusyncSourceSet> {
+    action: Action<DocsSet>
+  ): NamedDomainObjectProvider<DocsSet> {
 
-    fun taskNameBase(): String {
-      return when (name) {
-        "main" -> "docusync"
-        else -> "docusync${name.capitalize()}"
-      }
-    }
+    val parse = registerParseTask(name)
 
-    val check =
-      taskContainer.registerOnce("${taskNameBase()}Check", DocusyncTask::class.java) { task ->
-        task.group = "Docusync"
-        task.description = "Searches for any out-of-date documentation and fails if it finds any."
-        task.autoCorrect = false
-
-        val sourceSet = sourceSets.getByName(name)
-
-        task.docs.from(sourceSet.docs)
-        task.replacers.addAll(sourceSet.replacers)
-        task.outputs.files(sourceSet.docs.files)
-      }
-
-    val fix =
-      taskContainer.registerOnce("${taskNameBase()}Fix", DocusyncTask::class.java) { task ->
-        task.group = "Docusync"
-        task.description = "Automatically fixes any out-of-date documentation."
-        task.autoCorrect = true
-
-        val sourceSet = sourceSets.getByName(name)
-
-        task.docs.from(sourceSet.docs)
-        task.replacers.addAll(sourceSet.replacers)
-        task.outputs.files(sourceSet.docs.files)
-      }
+    val check = registerDocsTask(
+      docSetName = name,
+      autoCorrect = false,
+      parseTask = parse
+    )
+    val fix = registerDocsTask(
+      docSetName = name,
+      autoCorrect = true,
+      parseTask = parse
+    )
 
     if (name != "main") {
+      taskContainer.named("docusyncParse").dependsOn(parse)
       taskContainer.named("docusyncCheck").dependsOn(check)
       taskContainer.named("docusyncFix").dependsOn(fix)
     }
 
-    return sourceSets.register(name, action)
-  }
-}
-
-/** */
-abstract class DocusyncSourceSet : Named, java.io.Serializable {
-
-  /** */
-  abstract val docs: ConfigurableFileCollection
-
-  /** */
-  abstract val replacers: NamedDomainObjectContainer<ReplacerBuilderScope>
-
-  /**
-   * Adds a set of document paths to this source set. The given paths are evaluated as per [Project.files].
-   *
-   * @param paths The files to add.
-   * @return this
-   */
-  fun docs(vararg paths: Any) {
-    docs.from(*paths)
+    return docsSets.register(name, action)
   }
 
-  /** */
-  fun replacer(
-    name: String,
-    action: Action<ReplacerBuilderScope>
-  ): NamedDomainObjectProvider<ReplacerBuilderScope> {
-    return replacers.register(name, action)
-  }
+  private fun registerParseTask(docSetName: String): TaskProvider<DocsSyncParseTask> {
+    return taskContainer.registerOnce("docusyncParse", DocsSyncParseTask::class.java) { task ->
 
-  /** */
-  fun replacer(
-    name: String,
-    @Language("regexp") regex: String,
-    replacement: String
-  ): NamedDomainObjectProvider<ReplacerBuilderScope> {
-    return replacers.register(name) {
-      it.regex = regex
-      it.replacement = replacement
+      task.sampleCode.from(
+        docsSets.named(docSetName).map(DocsSet::sampleCode)
+      )
+
+      task.sampleRequests.addAll(
+        docsSets.named(docSetName)
+          .map { docsSet ->
+
+            docsSet.replacers.flatMap { it.sampleRequests }
+          }
+      )
+
+      task.samplesMapping.set(layout.buildDirectory.file("tmp/docusync/samples_$docSetName.json"))
     }
   }
-}
 
-/** */
-abstract class ReplacerBuilderScope : Named, java.io.Serializable {
+  private fun registerDocsTask(
+    docSetName: String,
+    autoCorrect: Boolean,
+    parseTask: TaskProvider<DocsSyncParseTask>
+  ): TaskProvider<DocsSyncDocsTask> {
 
-  /** */
-  abstract var regex: String
+    val suffix = if (autoCorrect) "Fix" else "Check"
 
-  /** */
-  abstract var replacement: String
+    val taskName = when (docSetName) {
+      "main" -> "docusync$suffix"
+      else -> "docusync${docSetName.capitalize()}$suffix"
+    }
+
+    return taskContainer.registerOnce(taskName, DocsSyncDocsTask::class.java) { task ->
+
+      task.autoCorrect = autoCorrect
+
+      task.group = "Docusync"
+      task.description = if (autoCorrect) {
+        "Automatically fixes any out-of-date documentation."
+      } else {
+        "Searches for any out-of-date documentation and fails if it finds any."
+      }
+
+      val docsSet = docsSets.getByName(docSetName)
+
+      task.samplesMapping.set(parseTask.get().samplesMapping)
+
+      task.docs.from(docsSet.docs)
+      task.replacerBuilders.addAll(docsSet.replacers)
+
+      task.outputs.files(docsSet.docs.files)
+    }
+  }
 }

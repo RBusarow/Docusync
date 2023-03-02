@@ -145,9 +145,9 @@ ij_yaml_spaces_within_braces = true
 ij_yaml_spaces_within_brackets = true
 
 [{*.markdown,*.md,*.mdx}]
-indent_size = 4
-tab_width = 4
-ij_continuation_indent_size = 4
+indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 2
 ij_markdown_force_one_space_after_blockquote_symbol = true
 ij_markdown_force_one_space_after_header_symbol = true
 ij_markdown_force_one_space_after_list_bullet = true
