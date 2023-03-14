@@ -29,7 +29,7 @@ jackson = "2.14.2"
 java-diff-utils = "4.12"
 javaParser = "3.25.1"
 jetbrains-markdown = "0.4.1"
-jmailen-kotlinter = "3.13.0"
+jmailen-kotlinter = "3.14.0"
 johnrengelman-shadow = "8.1.0"
 # the jdk used to build the project
 jdk = "11"
